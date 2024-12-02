@@ -4,6 +4,7 @@ from send_user_buttons import send_men_regions, send_women_regions, send_men_bar
     send_men_barber_details
 
 from barbershop_db import DataBase
+from send_user_buttons.send_women_details import send_women_barber_details
 
 db = DataBase()
 
@@ -55,7 +56,6 @@ async def inline_handler(update, context):
             message_id=query.message.message_id
         )
 
-
     # regionlardagi sartaroshlarni olib keladi.
     data_sp = str(query.data).split('_')
 
@@ -66,7 +66,6 @@ async def inline_handler(update, context):
         context.user_data['region_id'] = region_id
         # genderni ajratib olish
         data_sp[2] = context.user_data.get('gender')
-
 
         if data_sp[1].isdigit() and data_sp[2] == 'M':
             barbers = db.get_barbers(region_id=region_id, gender='M')
@@ -95,35 +94,86 @@ async def inline_handler(update, context):
                                        message_id=query.message.message_id)
 
 
-
-    # Barber haqida ma'lumot
     elif data_sp[0] == 'barber':
-
-        region_id = context.user_data.get('region_id')
+        # region_id = context.user_data.get('region_id')
         gender = context.user_data.get('gender')
 
-        # Erkaklar uchun xizmat ko'rsitadigan sartaroshlar
+        # Erkaklar uchun sartarosh ma'lumotlari
         if data_sp[1].isdigit() and data_sp[2] == 'M':
-            barber = db.get_barber_details(barber_id=data_sp[1], gender=gender)
-            await send_men_barber_details(context=context, barber=barber,
-                                          chat_id=query.message.chat_id,
-                                          message_id=query.message.message_id)
+            barber_id = int(data_sp[1])
 
+            # Sartarosh haqida ma'lumotlar
+            barber = db.get_barber_details(barber_id=barber_id, gender=gender)
+
+            # Rasmlar URL-larini olish
+            barber_photos = db.get_barber_photos(barber_id=barber_id)
+
+            location = db.get_location(barber_id=barber_id)
+
+            # Foydalanuvchiga yuborish
+            message_ids = await send_men_barber_details(
+                context=context,
+                barber=barber,
+                barber_photos=barber_photos,
+                location=location,
+                chat_id=query.message.chat_id
+            )
+
+            # Foydalanuvchi uchun yuborilgan xabarlar IDlarini saqlash
+            context.user_data['barber_message_ids'] = message_ids
+
+        # "Orqaga" tugmasi uchun (erkaklar)
         elif data_sp[1] == 'back' and data_sp[2] == 'M':
-            barbers = db.get_barbers(region_id=region_id, gender=gender)
-            await send_men_barbers(context=context, barbers=barbers,
-                                   chat_id=query.message.chat_id,
-                                   message_id=query.message.message_id)
+            # Saqlangan xabarlarni o'chirish
+            message_ids = context.user_data.get('barber_message_ids', [])
+            for msg_id in message_ids:
+                try:
+                    await context.bot.delete_message(
+                        chat_id=query.message.chat_id,
+                        message_id=msg_id
+                    )
+                except Exception as e:
+                    print(f"Xabarni o'chirishda xato: {e}")
 
-        # Ayollar uchun xizmat ko'rsitadigan sartaroshlar
+            # Kontekstni tozalash
+            context.user_data['barber_message_ids'] = []
+
+        # Ayollar uchun sartarosh ma'lumotlari
         if data_sp[1].isdigit() and data_sp[2] == 'F':
-            barber = db.get_barber_details(barber_id=data_sp[1], gender=gender)
-            await send_men_barber_details(context=context, barber=barber,
-                                          chat_id=query.message.chat_id,
-                                          message_id=query.message.message_id)
+            barber_id = int(data_sp[1])
 
+            # Sartarosh haqida ma'lumotlar
+            barber = db.get_barber_details(barber_id=barber_id, gender=gender)
+
+            # Rasmlar URL-larini olish
+            barber_photos = db.get_barber_photos(barber_id=barber_id)
+
+            location = db.get_location(barber_id=barber_id)
+
+            # Foydalanuvchiga yuborish
+            message_ids = await send_women_barber_details(
+                context=context,
+                barber=barber,
+                barber_photos=barber_photos,
+                location=location,
+                chat_id=query.message.chat_id
+            )
+
+            # Foydalanuvchi uchun yuborilgan xabarlar IDlarini saqlash
+            context.user_data['barber_message_ids'] = message_ids
+
+        # "Orqaga" tugmasi uchun (ayollar)
         elif data_sp[1] == 'back' and data_sp[2] == 'F':
-            barbers = db.get_barbers(region_id=region_id, gender=gender)
-            await send_men_barbers(context=context, barbers=barbers,
-                                   chat_id=query.message.chat_id,
-                                   message_id=query.message.message_id)
+            # Saqlangan xabarlarni o'chirish
+            message_ids = context.user_data.get('barber_message_ids', [])
+            for msg_id in message_ids:
+                try:
+                    await context.bot.delete_message(
+                        chat_id=query.message.chat_id,
+                        message_id=msg_id
+                    )
+                except Exception as e:
+                    print(f"Xabarni o'chirishda xato: {e}")
+
+            # Kontekstni tozalash
+            context.user_data['barber_message_ids'] = []

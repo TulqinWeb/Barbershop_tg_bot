@@ -103,6 +103,12 @@ class DataBase:
         regions = dict_fetchall(self.cursor)
         return regions
 
+    def get_location(self,barber_id):
+        self.cursor.execute("""
+        SELECT latitude, longitude from barbers
+        WHERE barber_id = %s""", (barber_id,))
+        location = dict_fetchone(self.cursor)
+        return location
 
 def dict_fetchall(cursor):
     columns = [col[0] for col in cursor.description]

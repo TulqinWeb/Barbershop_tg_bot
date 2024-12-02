@@ -20,7 +20,8 @@ async def message_handler(update, context):
 
         reply_markup = InlineKeyboardMarkup(keyboard)
         await context.bot.send_message(chat_id=update.message.from_user.id,
-                                       text="Tanlang",
+                                       text="<b>Kimlar uchun xizmat ko'rsatuvchi sartaroshni qidirmoqdasiz?</b>",
+                                       parse_mode='HTML',
                                        reply_markup=reply_markup)
 
     elif text == "Xizmat ko'rsatish uchun ro'yxatdan o'tish":

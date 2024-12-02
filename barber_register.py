@@ -52,7 +52,7 @@ async def name(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logging.info(f"Ismi: {name}")
     await update.message.reply_text(
         text="<b>Foydalanuvchilar sizga aloqaga chiqishi uchun telegram profilingiz havolasini yuboring:</b>\n"
-             "Masalan: https://t.me/abcdfusername yoki @aadadusername",
+             "<b>Masalan:</b> https://t.me/abcdfusername <b>yoki</b> @aadadusername",
         parse_mode="HTML"
     )
     return "TELEGRAM_LINK"
@@ -68,18 +68,18 @@ async def verify_telegram_link(update: Update, context: ContextTypes.DEFAULT_TYP
         context.user_data["telegram_link"] = link
         logging.info(f"Telegram link:{link}")
         await update.message.reply_text(
-            text=f"Havolangiz qabul qilindi: {link}\nRahmat",
+            text=f"<b>Havolangiz qabul qilindi:</b> {link}\n<b>Rahmat</b>",
             parse_mode="HTML"
         )
         await update.message.reply_text(
-            text="""O'zingiz haqingizda ma'lumotlar kiriting.Ushbu ma'lumotlar ko'proq foydalanuvchi sizga qiziqish bildirishi uchun muhim bo'lishi mumkin.""",
+            text="""<b>O'zingiz haqingizda ma'lumotlar kiriting.Ushbu ma'lumotlar ko'proq foydalanuvchi sizga qiziqish bildirishi uchun muhim bo'lishi mumkin.</b>""",
             parse_mode="HTML"
         )
         return "BIO"
 
     else:
         await update.message.reply_text(
-            text="Noto'g'ri format. Iltimos, havolani yoki username'ni to‘g‘ri shaklda yuboring.",
+            text="<b>Noto'g'ri format. Iltimos, havolani yoki username'ni to‘g‘ri shaklda yuboring.</b>",
             parse_mode="HTML"
         )
         return "TELEGRAM_LINK"
@@ -96,7 +96,8 @@ async def bio(update: Update, context: ContextTypes.DEFAULT_TYPE):
     logging.info(f"BIO : {bio}")
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text="Kimlar uchun o'z xizmatingizni taklif etasiz? Birini tanlang",
+        text="<b>Kimlar uchun o'z xizmatingizni taklif etasiz?</b> \n"
+             "<b>Tugmalardan birini tanlang</b>",
         parse_mode="HTML",
         reply_markup=reply_markup
     )
@@ -178,8 +179,9 @@ async def handle_photos(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Faqat yangi rasmlar yuborilgandan keyin umumiy xabar yuboriladi
         if new_photos:  # Yangi rasmlar qo'shilgan bo'lsa
             await update.message.reply_text(
-                f"Jami {len(photos)} ta rasm qabul qilindi.\n"
-                "Yana rasmlar yuborishingiz mumkin yoki keyingi bosqichga o'tish uchun /next buyrug'ini kiriting."
+               text= f"<b>Jami {len(photos)} ta rasm qabul qilindi.</b>\n"
+                     "<b>Yana rasmlar yuborishingiz mumkin yoki keyingi bosqichga o'tish uchun /next buyrug'ini kiriting.</b>",
+               parse_mode='HTML'
             )
 
         else:
@@ -192,11 +194,13 @@ async def next_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
     photos = context.user_data.get('photos', [])
     if photos:
         await update.message.reply_text(
-            f"Jami {len(photos)} ta rasm qabul qilindi. Keyingi bosqichga o'tamiz."
+            text=f"<b>Jami {len(photos)} ta rasm qabul qilindi. Keyingi bosqichga o'tamiz.</b>",
+            parse_mode='HTML'
         )
     else:
         await update.message.reply_text(
-            "Siz hech qanday rasm yubormadingiz. Davom etish uchun kamida bitta rasm yuboring."
+            text="<b>Siz hech qanday rasm yubormadingiz. Davom etish uchun kamida bitta rasm yuboring.</b>",
+            parse_mode='HTML'
         )
         return "PHOTO"  # Rasmlar yuborilmagani uchun shu holatda qoladi
 
@@ -208,7 +212,8 @@ async def next_step(update: Update, context: ContextTypes.DEFAULT_TYPE):
     )
     await context.bot.send_message(
         chat_id=update.effective_user.id,
-        text="Iltimos, foydalanuvchilar ish joyingizni oson topib borishi uchun, o'z ish joyingiz lokatsiyasini yuboring. Lokatsiya yuborish uchun << Joylashuv yuborish >> tugmasini bosing!",
+        text="<b>Iltimos, foydalanuvchilar ish joyingizni oson topib borishi uchun, o'z ish joyingiz lokatsiyasini yuboring. Lokatsiya yuborish uchun (Joylashuv yuborish) tugmasini bosing!</b>",
+        parse_mode='HTML',
         reply_markup=reply_markup
     )
     return "LOCATION"  # Keyingi bosqich
@@ -227,14 +232,14 @@ async def handle_location(update, context):
         # context.user_data['location'] = {'latitude': latitude, 'longitude': longitude}
 
         # Foydalanuvchiga joylashuv qabul qilinganligini bildirish
-        await update.message.reply_text("Joylashuvingiz qabul qilindi.")
+        await update.message.reply_text(text="<b>Joylashuvingiz qabul qilindi.</b>", parse_mode='HTML')
 
         # Barcha ma'lumotlarni foydalanuvchiga yuborish
         await send_all_data_to_user(update, context)
         return "CONFIRMATION"
     else:
         # Joylashuv yuborilmagan bo'lsa
-        await update.message.reply_text("Iltimos, telefoningizdan joylashuvingizni ulashing.")
+        await update.message.reply_text(text="<b>Iltimos, telefoningizdan joylashuvingizni ulashing.</b>", parse_mode='HTML')
         return "LOCATION"
 
 
@@ -330,7 +335,7 @@ async def confirm_and_send_to_admin(update, context):
                 parse_mode="HTML",
                 reply_markup=admin_reply_markup
             )
-            await query.message.reply_text("✅ Ma'lumotlaringiz adminga yuborildi.")
+            await query.message.reply_text(text="<b>✅ Ma'lumotlaringiz adminga yuborildi.</b>", parse_mode='HTML')
             await send_main_menu(context=context, chat_id=query.from_user.id)
         except Exception as e:
             print(f"Xatolik yuz berdi: {e}")
@@ -345,7 +350,7 @@ async def confirm_and_send_to_admin(update, context):
 
     elif action == "reject":
         # Foydalanuvchiga rad etilganligini bildirish
-        await query.message.reply_text("Ma'lumotlaringizni jo'natishni rad ettingiz.")
+        await query.message.reply_text(text="<b>Ma'lumotlaringizni jo'natishni rad ettingiz.</b>", parse_mode='HTML')
         context.user_data.clear()
         await send_main_menu(context=context, chat_id=query.from_user.id)
         # Tugmachalarni o'chirish
