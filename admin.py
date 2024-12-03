@@ -90,14 +90,15 @@ async def handle_admin_decision(update, context):
 
             await context.bot.send_message(
                 chat_id=query.from_user.id,
-                text="✅ Ma'lumotlar bazaga muvaffaqiyatli saqlandi!"
+                text="<b>✅ Ma'lumotlar bazaga muvaffaqiyatli saqlandi!</b>",
+                parse_mode='HTML'
             )
 
             # Xizmat ko'rsatuvchiga xabar yuborish
             try:
                 await context.bot.send_message(
                     chat_id=user_id,
-                    text="✅ Ma'lumotlaringiz tasdiqlandi! Endi xizmatlaringiz tizimga qo'shildi.",
+                    text="<b>✅ Ma'lumotlaringiz tasdiqlandi! Endi xizmatlaringiz tizimga qo'shildi.</b>",
                     parse_mode="HTML"
                 )
             except Exception as e:
@@ -111,7 +112,8 @@ async def handle_admin_decision(update, context):
         else:
             await context.bot.send_message(
                 chat_id=query.from_user.id,
-                text="❌ Ma'lumotlar bazaga saqlanmadi. Iltimos, yana urinib ko'ring."
+                text="<b>❌ Ma'lumotlar bazaga saqlanmadi. Iltimos, yana urinib ko'ring.</b>",
+                parse_mode='HTML'
             )
 
     elif action == "delete":
@@ -119,14 +121,15 @@ async def handle_admin_decision(update, context):
         users_data.pop(user_id, None)
         await context.bot.send_message(
             chat_id=query.from_user.id,
-            text="❌ Foydalanuvchi ma'lumotlari o'chirildi!"
+            text="<b>❌ Foydalanuvchi ma'lumotlari o'chirildi!</b>",
+            parse_mode='HTML'
         )
 
         # Xizmat ko'rsatuvchiga xabar yuborish
         try:
             await context.bot.send_message(
                 chat_id=user_id,
-                text="❌ Ma'lumotlaringiz tasdiqlanmadi. Tizimga qo'shilmadingiz.",
+                text="<b>❌ Ma'lumotlaringiz tasdiqlanmadi. Tizimga qo'shilmadingiz.</b>",
                 parse_mode="HTML"
             )
         except Exception as e:

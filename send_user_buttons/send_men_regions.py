@@ -16,14 +16,14 @@ async def send_men_regions(context, regions, chat_id, message_id=None):
         await context.bot.edit_message_text(
             chat_id=chat_id,
             message_id=message_id,
-            text="<b>Hududni tanlang:</b>",
+            text="<b>O'zingizga yaqin bo'lgan hududni tanlang:</b>",
             reply_markup=reply_markup,
             parse_mode="HTML"
         )
     else:
         await context.bot.send_message(
             chat_id=chat_id,
-            text="<b>Hududni tanlang:</b>",
+            text="<b>O'zingizga yaqin bo'lgan hududni tanlang:</b>",
             reply_markup=reply_markup,
             parse_mode="HTML"
         )
